@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import {
+  API_URL,
+  API_KEY,
+  IMAGE_BASE_URL,
+  POSTER_SIZE,
+  BACKDROP_SIZE
+} from '../../config';
 import HeroImage from '../elements/HeroImage/HeroImage';
 import SearchBar from '../elements/SearchBar/SearchBar';
 import FourColGrid from '../elements/FourColGrid/FourColGrid';
@@ -9,14 +16,109 @@ import Spinner from '../elements/Spinner/Spinner';
 import './Home.css';
 
 class Home extends Component {
+  state = {
+    movies: [],
+    heroImage: null,
+    loading: false,
+    currentPage: 0,
+    totalPages: 0,
+    searchTerm: ''
+  };
+
+  componentDidMount() {
+    this.setState({ loading: true });
+    const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+    this.fetchItems(endpoint);
+  }
+
+  searchItems = searchTerm => {
+    let endpoint = '';
+    this.setState({
+      movies: [],
+      loading: true,
+      searchTerm: searchTerm
+    });
+    if (searchTerm === '') {
+      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+      this.fetchItems(endpoint);
+    } else {
+      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}`;
+    }
+    this.fetchItems(endpoint);
+  };
+
+  loadMoreItems = () => {
+    let endpoint = '';
+    this.setState({ loading: true });
+    if (this.state.searchTerm === '') {
+      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${this
+        .state.currentPage + 1}`;
+    } else {
+      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${
+        this.state.searchTerm
+      }&pages=${this.state.currentPage + 1}`;
+    }
+    this.fetchItems(endpoint);
+  };
+
+  fetchItems = endpoint => {
+    fetch(endpoint).then(result =>
+      result.json().then(result => {
+        this.setState({
+          // this will copy old movies and append new
+          movies: [...this.state.movies, ...result.results],
+          heroImage: this.state.heroImage || result.results[0],
+          loading: false,
+          currentPage: result.page,
+          totalPages: result.total_pages
+        });
+      })
+    );
+  };
+
   render() {
     return (
       <div className='rmdb-home'>
-        <HeroImage />
-        <SearchBar />
-        <FourColGrid />
-        <Spinner />
-        <LoadMoreBtn />
+        {this.state.heroImage ? (
+          <div>
+            <HeroImage
+              image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${
+                this.state.heroImage.backdrop_path
+              }`}
+              title={this.state.heroImage.original_title}
+              text={this.state.heroImage.overview}
+            />
+            <SearchBar callback={this.searchItems} />
+          </div>
+        ) : null}
+
+        <div className='rmdb-home-grid'>
+          <FourColGrid
+            header={this.state.searchTerm ? 'Search Results' : 'Popular Movies'}
+            loading={this.state.loading}
+          >
+            {this.state.movies.map((element, i) => {
+              return (
+                <MovieThumb
+                  key={i}
+                  clickable={true}
+                  image={
+                    element.poster_path
+                      ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`
+                      : `./image/no_image.jpg`
+                  }
+                  movieId={element.id}
+                  movieName={element.original_title}
+                />
+              );
+            })}
+          </FourColGrid>
+          {this.state.loading ? <spiner /> : null}
+          {this.state.currentPage <= this.state.totalPages &&
+          !this.state.loading ? (
+            <LoadMoreBtn text='LoadMore' onClick={this.loadMoreItems} />
+          ) : null}
+        </div>
       </div>
     );
   }
