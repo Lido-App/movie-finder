@@ -6,8 +6,8 @@ import './MovieInfoBar.css';
 const MovieInfoBar = props => {
   return (
     <div className='rmdb-movieinfobar'>
-      <div className='rmdb-movieinforbar-content'>
-        <div className='rmdb-movieinfobar-col'>
+      <div className='rmdb-movieinfobar-content'>
+        <div className='rmdb-movieinfobar-content-col'>
           <FontAwesome className='fa-time' name='clock-o' size='2x' />
           <span className='rmdb-movieinfobar-info'>
             Running time: {calcTime(props.time)}
@@ -20,7 +20,7 @@ const MovieInfoBar = props => {
           </span>
         </div>
         <div className='rmdb-movieinfobar-content-col'>
-          <FontAwesome class='fa-revenue' name='ticket' size='2x' />
+          <FontAwesome className='fa-revenue' name='ticket' size='2x' />
           <span className='rmdb-movieinfobar-info'>
             Revenue: {convertMoney(props.revenue)}
           </span>

@@ -11,7 +11,7 @@ import SearchBar from '../elements/SearchBar/SearchBar';
 import FourColGrid from '../elements/FourColGrid/FourColGrid';
 import MovieThumb from '../elements/MovieThumb/MovieThumb';
 import LoadMoreBtn from '../elements/LoadMoreBtn/LoadMoreBtn';
-// import Spinner from '../elements/Spinner/Spinner';
+import Spinner from '../elements/Spinner/Spinner';
 
 import './Home.css';
 
@@ -113,7 +113,7 @@ class Home extends Component {
               );
             })}
           </FourColGrid>
-          {this.state.loading ? <spiner /> : null}
+          {this.state.loading ? <Spinner /> : null}
           {this.state.currentPage <= this.state.totalPages &&
           !this.state.loading ? (
             <LoadMoreBtn text='LoadMore' onClick={this.loadMoreItems} />
