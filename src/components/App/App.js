@@ -7,7 +7,7 @@ import NotFound from '../elements/NotFound/NotFound';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/movie-finder/'>
       <>
         <Header />
         <Switch>
