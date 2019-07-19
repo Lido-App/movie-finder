@@ -141,7 +141,7 @@ class Home extends Component {
           </FourColGrid>
           {loading ? <Spinner /> : null}
           {currentPage <= totalPages && !loading ? (
-            <LoadMoreBtn text='LoadMore' onClick={this.loadMoreItems} />
+            <LoadMoreBtn text='Load More' onClick={this.loadMoreItems} />
           ) : null}
         </div>
       </div>
