@@ -1,10 +1,10 @@
 import React from 'react';
-import { IMAGE_BASE_URL, POSTER_SIZE } from '../../../config';
+import { IMAGE_BASE_URL } from '../../../config';
 import './Actor.css';
 
 const Actor = props => {
   const POSTER_SIZE = 'w154';
-
+  // console.log(props.actor);
   return (
     <div className='rmdb-actor'>
       <img

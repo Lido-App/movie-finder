@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import './FourColGrid.css';
 
 const FourColGrid = props => {
@@ -18,6 +19,11 @@ const FourColGrid = props => {
       <div className='rmdb-grid-content'>{renderElements()}</div>
     </div>
   );
+};
+
+FourColGrid.prototypes = {
+  header: propTypes.string,
+  loading: propTypes.bool.isRequired
 };
 
 export default FourColGrid;

@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
+  function clearStorage() {
+    localStorage.clear();
+  }
   return (
     <div className='rmdb-header'>
       <div className='rmdb-header-content'>
-        <Link to='/'>
+        <Link to='/' onClick={clearStorage}>
           <img
             className='rmdb-logo'
             src='./images/reactMovie_logo.png'
