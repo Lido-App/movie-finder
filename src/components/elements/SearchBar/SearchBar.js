@@ -1,37 +1,31 @@
-import React, { Component } from 'react';
-import FontAwesome from 'react-fontawesome';
-import './SearchBar.css';
+import React, { useState, useCallback } from "react";
+import FontAwesome from "react-fontawesome";
+import "./SearchBar.css";
 
-export default class SearchBar extends Component {
-  state = {
-    value: ''
-  };
+import { debounce } from "lodash";
 
-  timeout = null;
+export default function SearchBar({ callback, wait = 500 }) {
+  const [value, setValue] = useState("");
 
-  doSearch = event => {
+  const debouncedCallback = useCallback(debounce(v => callback(v), wait), [callback]);
+  const handleSearch = useCallback(({ target: { value: localValue }}) => {
     // this will update input field val everytime user hits key
-    this.setState({ value: event.target.value });
-    clearTimeout(this.timeout);
+    setValue(localValue);
+    debouncedCallback(localValue);
+  });
 
-    this.timeout = setTimeout(() => {
-      this.props.callback(this.state.value);
-    }, 500);
-  };
-  render() {
-    return (
-      <div className='rmdb-searchbar'>
-        <div className='rmdb-searchbar-content'>
-          <FontAwesome className='rmdb-fa-search' name='search' size='2x' />
-          <input
-            type='text'
-            className='rmdb-searchbar-input'
-            placeholder='Search'
-            onChange={this.doSearch}
-            value={this.state.value}
-          />
-        </div>
+  return (
+    <div className="rmdb-searchbar">
+      <div className="rmdb-searchbar-content">
+        <FontAwesome className="rmdb-fa-search" name="search" size="2x" />
+        <input
+          type="text"
+          className="rmdb-searchbar-input"
+          placeholder="Search"
+          onChange={handleSearch}
+          value={value}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
