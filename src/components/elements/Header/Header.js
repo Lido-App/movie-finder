@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
+import movieLogo from "./reactMovie_logo.png";
+import tmdbLogo from "./tmdb_logo.png";
 
 const Header = () => {
   function clearStorage() {
@@ -12,14 +14,14 @@ const Header = () => {
         <Link to='/' onClick={clearStorage}>
           <img
             className='rmdb-logo'
-            src='./images/reactMovie_logo.png'
+            src={movieLogo}
             alt='rmdb-logo'
           />
         </Link>
 
         <img
           className='rmdb-tmdb-logo'
-          src='./images/tmdb_logo.png'
+          src={tmdbLogo}
           alt='rmdb-tmdb-logo'
         />
       </div>

@@ -1,8 +1,9 @@
 {
-  "name": "react_movie_db_course",
+  "name": "movie-finder",
   "version": "0.2.0",
   "private": true,
   "dependencies": {
+    "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
