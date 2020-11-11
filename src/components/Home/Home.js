@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   API_URL,
   API_KEY,
   IMAGE_BASE_URL,
   POSTER_SIZE,
-  BACKDROP_SIZE
-} from '../../config';
-import HeroImage from '../elements/HeroImage/HeroImage';
-import SearchBar from '../elements/SearchBar/SearchBar';
-import FourColGrid from '../elements/FourColGrid/FourColGrid';
-import MovieThumb from '../elements/MovieThumb/MovieThumb';
-import LoadMoreBtn from '../elements/LoadMoreBtn/LoadMoreBtn';
-import Spinner from '../elements/Spinner/Spinner';
+  BACKDROP_SIZE,
+} from "../../config";
+import HeroImage from "../elements/HeroImage/HeroImage";
+import SearchBar from "../elements/SearchBar/SearchBar";
+import FourColGrid from "../elements/FourColGrid/FourColGrid";
+import MovieThumb from "../elements/MovieThumb/MovieThumb";
+import LoadMoreBtn from "../elements/LoadMoreBtn/LoadMoreBtn";
+import Spinner from "../elements/Spinner/Spinner";
 
-import './Home.css';
+import "./Home.css";
 
 class Home extends Component {
   state = {
@@ -22,13 +22,13 @@ class Home extends Component {
     loading: false,
     currentPage: 0,
     totalPages: 0,
-    searchTerm: ''
+    searchTerm: "",
   };
 
   componentDidMount() {
-    if (localStorage.getItem('HomeState')) {
+    if (localStorage.getItem("HomeState")) {
       // take the string from local storage and convert back to state obj
-      const state = JSON.parse(localStorage.getItem('HomeState'));
+      const state = JSON.parse(localStorage.getItem("HomeState"));
       this.setState({ ...state });
     } else {
       this.setState({ loading: true });
@@ -37,58 +37,96 @@ class Home extends Component {
     }
   }
 
-  searchItems = searchTerm => {
-    let endpoint = '';
+  searchItems = async (searchTerm) => {
+    let endpoint = "";
     this.setState({
       movies: [],
       loading: true,
-      searchTerm: searchTerm
+      searchTerm: searchTerm,
     });
-    if (searchTerm === '') {
+    if (searchTerm === "") {
       endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
-      this.fetchItems(endpoint);
     } else {
       endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}`;
     }
+
     this.fetchItems(endpoint);
   };
 
-  loadMoreItems = () => {
-    let endpoint = '';
+  fetchItems = async (endpoint) => {
+    const result = await (await fetch(endpoint)).json();
+
+    console.log(result);
+
+    let currentlyPlaying = [];
+    if (this.state.currentPage === 1) {
+      currentlyPlaying = await this.fetchCurrentlyPlaying(
+        this.state.searchTerm
+      );
+    }
+
+    this.updateMovies(currentlyPlaying, result);
+  };
+
+  loadMoreItems = async () => {
+    let endpoint = "";
     this.setState({ loading: true });
-    if (this.state.searchTerm === '') {
-      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${this
-        .state.currentPage + 1}`;
+    if (this.state.searchTerm === "") {
+      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${
+        this.state.currentPage + 1
+      }`;
     } else {
       endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${
         this.state.searchTerm
       }&pages=${this.state.currentPage + 1}`;
     }
+
     this.fetchItems(endpoint);
   };
 
-  fetchItems = async endpoint => {
+  fetchCurrentlyPlaying = async (searchTerm) => {
+    if (!localStorage.getItem("CurrentlyPlaying")) {
+      localStorage.setItem(
+        "CurrentlyPlaying",
+        JSON.stringify(
+          await (
+            await fetch(
+              `${API_URL}movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`
+            )
+          ).json()
+        )
+      );
+    }
+
+    return JSON.parse(
+      localStorage.getItem("CurrentlyPlaying")
+    ).results.filter(({ original_title }) =>
+      original_title.toLocaleLowerCase().match(searchTerm.toLocaleLowerCase())
+    );
+  };
+
+  updateMovies = (currentlyPlaying, searchResult) => {
     const { movies, heroImage, searchTerm } = this.state;
-    const result = await (await fetch(endpoint)).json();
     try {
       this.setState(
         {
+          currentlyPlaying,
           // this will copy old movies and append new
-          movies: [...movies, ...result.results],
-          heroImage: heroImage || result.results[0],
+          movies: [...movies, ...searchResult.results],
+          heroImage: heroImage || searchResult.results[0],
           loading: false,
-          currentPage: result.page,
-          totalPages: result.total_pages
+          currentPage: searchResult.page,
+          totalPages: searchResult.total_pages,
         },
         () => {
-          if (searchTerm !== '') {
+          if (searchTerm !== "") {
             // store the data in local storage after state updates
-            localStorage.setItem('HomeState', JSON.stringify(this.state));
+            localStorage.setItem("HomeState", JSON.stringify(this.state));
           }
         }
       );
     } catch (err) {
-      console.log('Error:', err);
+      console.log("Error:", err);
     }
   };
 
@@ -96,21 +134,20 @@ class Home extends Component {
     //es6 destructuring the state
     const {
       movies,
+      currentlyPlaying = [],
       heroImage,
       loading,
       currentPage,
       totalPages,
-      searchTerm
+      searchTerm,
     } = this.state;
 
     return (
-      <div className='rmdb-home'>
+      <div className="rmdb-home">
         {heroImage ? (
           <div>
             <HeroImage
-              image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${
-                heroImage.backdrop_path
-              }`}
+              image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${heroImage.backdrop_path}`}
               title={heroImage.original_title}
               text={heroImage.overview}
             />
@@ -118,9 +155,28 @@ class Home extends Component {
           </div>
         ) : null}
 
-        <div className='rmdb-home-grid'>
+        <div className="rmdb-home-grid">
+          {Boolean(currentlyPlaying.length) && (
+            <FourColGrid header={"Currently Playing"} loading={loading}>
+              {currentlyPlaying.map((element, i) => {
+                return (
+                  <MovieThumb
+                    key={i}
+                    clickable={true}
+                    image={
+                      element.poster_path
+                        ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`
+                        : "./images/no_image.jpg"
+                    }
+                    movieId={element.id}
+                    movieName={element.original_title}
+                  />
+                );
+              })}
+            </FourColGrid>
+          )}
           <FourColGrid
-            header={searchTerm ? 'Search Results' : 'Popular Movies'}
+            header={searchTerm ? "Search Results" : "Popular Movies"}
             loading={loading}
           >
             {movies.map((element, i) => {
@@ -131,7 +187,7 @@ class Home extends Component {
                   image={
                     element.poster_path
                       ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`
-                      : './images/no_image.jpg'
+                      : "./images/no_image.jpg"
                   }
                   movieId={element.id}
                   movieName={element.original_title}
@@ -141,7 +197,7 @@ class Home extends Component {
           </FourColGrid>
           {loading ? <Spinner /> : null}
           {currentPage <= totalPages && !loading ? (
-            <LoadMoreBtn text='Load More' onClick={this.loadMoreItems} />
+            <LoadMoreBtn text="Load More" onClick={this.loadMoreItems} />
           ) : null}
         </div>
       </div>
