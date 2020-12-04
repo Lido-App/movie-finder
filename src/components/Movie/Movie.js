@@ -1,106 +1,55 @@
-import React, { Component } from 'react';
-import { API_URL, API_KEY } from '../../config';
-import Navigation from '../elements/Navigation/Navigation';
-import MovieInfo from '../elements/MovieInfo/MovieInfo';
-import MovieInfoBar from '../elements/MovieInfoBar/MovieInfoBar';
-import FourColGrid from '../elements/FourColGrid/FourColGrid';
-import Actor from '../elements/Actor/Actor';
-import Spinner from '../elements/Spinner/Spinner';
-import './Movie.css';
+import React, { Component, useState, useEffect } from "react";
+import Navigation from "../elements/Navigation/Navigation";
+import MovieInfo from "../elements/MovieInfo/MovieInfo";
+import MovieInfoBar from "../elements/MovieInfoBar/MovieInfoBar";
+import Actor from "../elements/Actor/Actor";
+import Spinner from "../elements/Spinner/Spinner";
+import fetchMovieData from "../../api/fetchMovieData";
+import "./Movie.css";
+import Sidescroll from "../elements/Sidescroll/Sidescroll";
 
-export default class Movie extends Component {
-  state = {
-    movie: null,
-    actors: null,
-    directors: [],
-    loading: false
-  };
+export default ({ location, match }) => {
+  const [movie, setMovie] = useState(null);
+  const [actors, setActors] = useState(null);
+  const [directors, setDirectors] = useState([]);
+  const [loading, setLoading] = useState(null);
 
-  componentDidMount() {
-    if (localStorage.getItem(`${this.props.match.params.movieId}`)) {
-      const state = JSON.parse(
-        localStorage.getItem(`${this.props.match.params.movieId}`)
-      );
-      this.setState({ ...state });
-    } else {
-      this.setState({ loading: true });
-      // First fetch movie ...
-      const endpoint = `${API_URL}movie/${
-        this.props.match.params.movieId
-      }?api_key=${API_KEY}&language=en-US`;
-      this.fetchItems(endpoint);
-    }
-  }
+  useEffect(async () => {
+    setLoading(true);
+    const result = await fetchMovieData(match.params.movieId);
 
-  fetchItems = endpoint => {
-    fetch(endpoint)
-      .then(result => result.json())
-      .then(result => {
-        if (result.status_code) {
-          this.setState({ loading: false });
-        } else {
-          this.setState({ movie: result }, () => {
-            // then fetch actors in setState callback
-            const endpoint = `${API_URL}movie/${
-              this.props.match.params.movieId
-            }/credits?api_key=${API_KEY}`;
-            fetch(endpoint)
-              .then(result => result.json())
-              .then(result => {
-                const directors = result.crew.filter(
-                  member => member.job === 'Director'
-                );
-                this.setState(
-                  {
-                    actors: result.cast,
-                    directors: directors,
-                    loading: false
-                  },
-                  () => {
-                    localStorage.setItem(
-                      `${this.props.match.params.movieId}`,
-                      JSON.stringify(this.state)
-                    );
-                  }
-                );
-              });
-          });
-        }
-      })
-      .catch(error => console.log('Error: ', error));
-  };
+    setMovie(result.movie);
+    setActors(result.actors);
+    setDirectors(result.directors);
+    setLoading(false);
+  }, [match.params.movieId]);
 
-  render() {
-    return (
-      <div className='rmdb-movie'>
-        {this.state.movie ? (
-          <div>
-            <Navigation movie={this.props.location.movieName} />
-            <MovieInfo
-              movie={this.state.movie}
-              directors={this.state.directors}
-            />
-            <MovieInfoBar
-              time={this.state.movie.runtime}
-              budget={this.state.movie.budget}
-              revenue={this.state.movie.revenue}
-            />
-          </div>
-        ) : null}
-        {!this.state.actors && !this.state.loading ? (
-          <h1>No Movie Found!</h1>
-        ) : null}
-        {this.state.loading ? <Spinner /> : null}
-        {this.state.actors ? (
-          <div className='rmdb-movie-grid'>
-            <FourColGrid header={'Actors'}>
-              {this.state.actors.map((element, i) => {
-                return <Actor key={i} actor={element} />;
-              })}
-            </FourColGrid>
-          </div>
-        ) : null}
-      </div>
-    );
-  }
-}
+  console.log(directors);
+
+  return (
+    <div className="rmdb-movie">
+      {movie ? (
+        <div>
+          <Navigation movie={location.movieName} />
+          <MovieInfo movie={movie} directors={directors} />
+          <MovieInfoBar
+            time={movie.runtime}
+            budget={movie.budget}
+            revenue={movie.revenue}
+          />
+        </div>
+      ) : null}
+      {!actors && !loading ? <h1>No Movie Found!</h1> : null}
+      {loading ? <Spinner /> : null}
+      {actors ? (
+        <div className="rmdb-movie-grid">
+          <Sidescroll header={"Actors"}>
+            {actors.map((element, i) => {
+              return <Actor key={i} actor={element} />;
+            })}
+          </Sidescroll>
+        </div>
+      ) : null}
+    </div>
+  );
+};

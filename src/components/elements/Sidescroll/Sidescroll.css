@@ -1,0 +1,39 @@
+.rmdb-SCROLL h1 {
+  font-family: "Abel", sans-serif;
+  font-size: 42px;
+}
+
+.rmdb-SCROLL-content {
+  display: block;
+  overflow: scroll;
+  position: relative;
+}
+
+.rmdb-SCROLL-element {
+  animation: ANIMATESCROLL 0.5s;
+}
+
+@keyframes ANIMATESCROLL {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .rmdb-SCROLL-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rmdb-SCROLL h1 {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .rmdb-SCROLL-content {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
