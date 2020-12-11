@@ -12,18 +12,12 @@ import FourColGrid from "../elements/FourColGrid/FourColGrid";
 import MovieThumb from "../elements/MovieThumb/MovieThumb";
 import LoadMoreBtn from "../elements/LoadMoreBtn/LoadMoreBtn";
 import Spinner from "../elements/Spinner/Spinner";
+import { state } from "../App/Data.store";
 
 import "./Home.css";
 
 class Home extends Component {
-  state = {
-    movies: [],
-    heroImage: null,
-    loading: false,
-    currentPage: 0,
-    totalPages: 0,
-    searchTerm: "",
-  };
+  state = state("home");
 
   componentDidMount() {
     if (localStorage.getItem("HomeState")) {
