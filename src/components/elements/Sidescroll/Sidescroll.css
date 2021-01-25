@@ -4,7 +4,8 @@
 }
 
 .rmdb-SCROLL-content {
-  display: block;
+  display: grid;
+  grid-gap: 1rem;
   overflow: scroll;
   position: relative;
 }
@@ -22,9 +23,9 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 768px) {
   .rmdb-SCROLL-content {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .rmdb-SCROLL h1 {
