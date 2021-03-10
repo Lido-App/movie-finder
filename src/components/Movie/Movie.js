@@ -7,24 +7,29 @@ import Spinner from "../elements/Spinner/Spinner";
 import fetchMovieData from "../../api/fetchMovieData";
 import "./Movie.css";
 import Sidescroll from "../elements/Sidescroll/Sidescroll";
+import fetchSimilarMovies from "../../api/fetchSimilarMovies";
+import { IMAGE_BASE_URL, POSTER_SIZE } from "../../config";
 
 export default ({ location, match }) => {
   const [movie, setMovie] = useState(null);
   const [actors, setActors] = useState(null);
   const [directors, setDirectors] = useState([]);
   const [loading, setLoading] = useState(null);
+  const [similarMovies, setSimilarMovies] = useState(null);
 
   useEffect(async () => {
     setLoading(true);
-    const result = await fetchMovieData(match.params.movieId);
+    const [movieDataResult, similarMovieResult] = await Promise.all([
+      fetchMovieData(match.params.movieId),
+      fetchSimilarMovies(match.params.movieId),
+    ]);
 
-    setMovie(result.movie);
-    setActors(result.actors);
-    setDirectors(result.directors);
+    setSimilarMovies(similarMovieResult.movies);
+    setMovie(movieDataResult.movie);
+    setActors(movieDataResult.actors);
+    setDirectors(movieDataResult.directors);
     setLoading(false);
   }, [match.params.movieId]);
-
-  console.log(directors);
 
   return (
     <div className="rmdb-movie">
@@ -49,6 +54,34 @@ export default ({ location, match }) => {
             })}
           </Sidescroll>
         </div>
+      ) : null}
+      {similarMovies ? (
+        <ul>
+          {similarMovies.map(
+            ({
+              original_title: originalTitle,
+              id,
+              poster_path: posterPath,
+              backdrop_path: backdropPath,
+            }) => (
+              <div style={{ padding: "1em", display: "inline-block" }}>
+                <a
+                  href={`/movie-finder/${id}`}
+                  style={{
+                    outline: "none",
+                    textDecoration: "none",
+                  }}
+                >
+                  <img
+                    src={`${IMAGE_BASE_URL}w185${backdropPath}`}
+                    style={{ display: "block" }}
+                  />
+                  {originalTitle}
+                </a>
+              </div>
+            )
+          )}
+        </ul>
       ) : null}
     </div>
   );
