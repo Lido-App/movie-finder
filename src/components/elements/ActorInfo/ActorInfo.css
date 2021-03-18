@@ -1,4 +1,27 @@
+.rmdb-actorinfo {
+  /* height: 400px;
+  float: left; */
+  height: 100vh;
+  width: 100vw;
+}
+
 .rmdb-actorinfo-thumb {
   height: 400px;
+  width: 50%;
   float: left;
+}
+
+.rmdb-actorinfo-thumb > img {
+  width: 100%;
+}
+
+.rmdb-actorinfo-details {
+  float: left;
+  width: 50%;
+}
+
+.rmdb-actorinfo-name {
+  height: 200px;
+  width: 100%;
+  text-align: center;
 }
