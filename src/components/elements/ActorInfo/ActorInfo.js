@@ -41,7 +41,16 @@ const ActorInfo = (props) => {
           );
         })}
         <div className="rmdb-actorinfo-name">{name}</div>
-        {JSON.stringify(starredInMovieNames)}
+        <div className="rmdb-actorinfo-details">
+          {starredInMovieNames?.cast?.map(({ title }) => {
+            return (
+              <>
+                {title}
+                <br />
+              </>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
