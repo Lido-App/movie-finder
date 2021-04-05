@@ -4,11 +4,11 @@ import MovieInfo from "../elements/MovieInfo/MovieInfo";
 import MovieInfoBar from "../elements/MovieInfoBar/MovieInfoBar";
 import Actor from "../elements/Actor/Actor";
 import Spinner from "../elements/Spinner/Spinner";
-import fetchMovieData from "../../api/fetchMovieData";
+
 import "./Movie.css";
 import Sidescroll from "../elements/Sidescroll/Sidescroll";
-import fetchSimilarMovies from "../../api/fetchSimilarMovies";
 import { IMAGE_BASE_URL, POSTER_SIZE } from "../../config";
+import fetcher from "../../api/fetcher";
 
 export default ({ location, match }) => {
   const [movie, setMovie] = useState(null);
@@ -19,15 +19,24 @@ export default ({ location, match }) => {
 
   useEffect(async () => {
     setLoading(true);
-    const [movieDataResult, similarMovieResult] = await Promise.all([
-      fetchMovieData(match.params.movieId),
-      fetchSimilarMovies(match.params.movieId),
+    const [movie, credits, similarMovies] = await Promise.all([
+      fetcher({ id: match.params.movieId, prefix: "movie", routeName: "" }),
+      fetcher({
+        id: match.params.movieId,
+        prefix: "movie",
+        routeName: "/credits",
+      }),
+      fetcher({
+        id: match.params.movieId,
+        prefix: "movie",
+        routeName: "/similar",
+      }),
     ]);
 
-    setSimilarMovies(similarMovieResult.movies);
-    setMovie(movieDataResult.movie);
-    setActors(movieDataResult.actors);
-    setDirectors(movieDataResult.directors);
+    setSimilarMovies(similarMovies.results);
+    setMovie(movie);
+    setActors(credits.cast);
+    setDirectors(credits.crew.filter((member) => member.job === "Director"));
     setLoading(false);
   }, [match.params.movieId]);
 
