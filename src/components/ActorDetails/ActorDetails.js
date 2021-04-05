@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ActorInfo from "../elements/ActorInfo/ActorInfo";
 import Spinner from "../elements/Spinner/Spinner";
-import fetchActorData from "../../api/fetchActorData";
+import fetcher from "../../api/fetcher";
 import "./ActorDetails.css";
 
 export default ({ location, match }) => {
@@ -10,9 +10,13 @@ export default ({ location, match }) => {
 
   useEffect(async () => {
     setLoading(true);
-    const result = await fetchActorData(match.params.actorId);
+    const actor = await fetcher({
+      id: match.params.actorId,
+      prefix: "person",
+      routeName: "",
+    });
 
-    setActor(result.actor);
+    setActor(actor);
     setLoading(false);
   }, [match.params.actorId]);
 

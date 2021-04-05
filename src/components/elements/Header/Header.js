@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Header.css";
 import movieLogo from "./reactMovie_logo.png";
 import tmdbLogo from "./tmdb_logo.png";
 
@@ -9,21 +9,13 @@ const Header = () => {
     localStorage.clear();
   }
   return (
-    <div className='rmdb-header'>
-      <div className='rmdb-header-content'>
-        <Link to='/' onClick={clearStorage}>
-          <img
-            className='rmdb-logo'
-            src={movieLogo}
-            alt='rmdb-logo'
-          />
-        </Link>
+    <div className="rmdb-header">
+      <div className="rmdb-header-content">
+        <a href="/movie-finder" onClick={clearStorage}>
+          <img className="rmdb-logo" src={movieLogo} alt="rmdb-logo" />
+        </a>
 
-        <img
-          className='rmdb-tmdb-logo'
-          src={tmdbLogo}
-          alt='rmdb-tmdb-logo'
-        />
+        <img className="rmdb-tmdb-logo" src={tmdbLogo} alt="rmdb-tmdb-logo" />
       </div>
     </div>
   );
