@@ -5,7 +5,7 @@ export default async (actorId) => {
     fetch(`${API_URL}person/${actorId}?api_key=${API_KEY}&language=en-US`),
   ]);
 
-  const [actor] = await Promise.all([actorResult.json()]);
+  const actor = await actorResult.json();
 
   return {
     actor,

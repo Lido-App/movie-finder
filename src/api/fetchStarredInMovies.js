@@ -7,14 +7,6 @@ export default async (personId) => {
 
   const results = await movieResult.json();
 
-  let movieNamesStarredIn = [];
-
-  if (results.cast) {
-    for (let movie of results.cast) {
-      console.log(movie);
-    }
-  }
-
   return {
     movies: results,
   };
