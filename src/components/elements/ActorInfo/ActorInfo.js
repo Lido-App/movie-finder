@@ -22,16 +22,44 @@ const ActorInfo = (props) => {
   const { name, profile_path } = props.actor;
   console.log("props.actor : %O", props.actor);
   return (
-    <div className="rmdb-actorinfo">
-      <div className="rmdb-actorinfo-thumb">
-        {profile_path && profile_path.length > 0 && (
-          <img
-            src={`${IMAGE_BASE_URL}${PORTRAIT_SIZE}${profile_path}`}
-            alt="actorthumb"
-          />
-        )}
+    <div>
+      <div className="rmdb-actorinfo">
+        <div className="rmdb-actorinfo-thumb">
+          {profile_path && profile_path.length > 0 && (
+            <img
+              src={`${IMAGE_BASE_URL}${PORTRAIT_SIZE}${profile_path}`}
+              alt="actorthumb"
+            />
+          )}
+        </div>
+
+        <div className="rmdb-actorinfo-details">
+          <h1 className="rmdb-actorinfo-details-item rmdb-actorinfo-name">
+            {name}
+          </h1>
+
+          <div className="rmdb-actorinfo-details-item rmdb-actorinfo-bio">
+            {props.actor.biography}
+          </div>
+
+          <div className="rmdb-actorinfo-details-item rmdb-actorinfo-otherfilms">
+            {loading ? (
+              <div>Loading</div>
+            ) : (
+              starredInMovieNames?.cast?.map(({ title }) => {
+                return (
+                  <>
+                    {title}
+                    <br />
+                  </>
+                );
+              })
+            )}
+          </div>
+        </div>
       </div>
-      <div className="rmdb-actorinfo-details">
+
+      <pre>
         {Object.keys(props.actor).map((prop) => {
           return (
             <>
@@ -40,18 +68,7 @@ const ActorInfo = (props) => {
             </>
           );
         })}
-        <div className="rmdb-actorinfo-name">{name}</div>
-        <div className="rmdb-actorinfo-details">
-          {starredInMovieNames?.cast?.map(({ title }) => {
-            return (
-              <>
-                {title}
-                <br />
-              </>
-            );
-          })}
-        </div>
-      </div>
+      </pre>
     </div>
   );
 };
