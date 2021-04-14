@@ -1,27 +1,34 @@
 .rmdb-actorinfo {
-  /* height: 400px;
-  float: left; */
-  height: 100vh;
+  display: flex;
   width: 100vw;
 }
 
 .rmdb-actorinfo-thumb {
-  height: 400px;
-  width: 50%;
-  float: left;
 }
 
 .rmdb-actorinfo-thumb > img {
-  width: 100%;
+  width: auto;
+  max-height: 400px;
 }
 
 .rmdb-actorinfo-details {
-  float: left;
-  width: 50%;
 }
 
 .rmdb-actorinfo-name {
-  height: 200px;
-  width: 100%;
-  text-align: center;
+}
+
+.rmdb-actorinfo-bio {
+}
+
+.rmdb-actorinfo-otherfilms {
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+.rmdb-actorinfo-details-item {
+}
+
+/*potential to share css */
+pre {
+  white-space: pre-wrap;
 }
