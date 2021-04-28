@@ -6,7 +6,6 @@ import "./MovieThumb.css";
 //es6 destructuring props
 const MovieThumb = ({ image, movieId, movieName, clickable }) => {
   const noImage = "/movie-finder/images/no_image.jpg";
-  console.log(image);
 
   return (
     <div className="rmdb-moviethumb">

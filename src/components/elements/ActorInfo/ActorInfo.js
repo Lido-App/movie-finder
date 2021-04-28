@@ -49,17 +49,14 @@ const ActorInfo = (props) => {
             ) : (
               <div className="rmdb-home-grid">
                 <FourColGrid header={"Movies Appeared In"}>
-                  {starredInMovieNames?.cast?.map((movie) => {
-                    console.log(movie);
-                    return (
-                      <MovieThumb
-                        clickable
-                        image={movie.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`}
-                        movieId={movie.id}
-                        movieName={movie.title}
-                      />
-                    );
-                  })}
+                  {starredInMovieNames?.cast?.map((movie) => (
+                    <MovieThumb
+                      clickable
+                      image={movie.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`}
+                      movieId={movie.id}
+                      movieName={movie.title}
+                    />
+                  ))}
                 </FourColGrid>
               </div>
             )}
