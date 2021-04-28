@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-
-import { IMAGE_BASE_URL, PORTRAIT_SIZE } from "../../../config";
+import MovieThumb from '../MovieThumb/MovieThumb';
+import { IMAGE_BASE_URL, PORTRAIT_SIZE, POSTER_SIZE } from "../../../config";
+import FourColGrid from "../FourColGrid/FourColGrid";
 
 import "./ActorInfo.css";
 
@@ -46,14 +47,21 @@ const ActorInfo = (props) => {
             {loading ? (
               <div>Loading</div>
             ) : (
-              starredInMovieNames?.cast?.map(({ title }) => {
-                return (
-                  <>
-                    {title}
-                    <br />
-                  </>
-                );
-              })
+              <div className="rmdb-home-grid">
+                <FourColGrid header={"Movies Appeared In"}>
+                  {starredInMovieNames?.cast?.map((movie) => {
+                    console.log(movie);
+                    return (
+                      <MovieThumb
+                        clickable
+                        image={movie.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`}
+                        movieId={movie.id}
+                        movieName={movie.title}
+                      />
+                    );
+                  })}
+                </FourColGrid>
+              </div>
             )}
           </div>
         </div>

@@ -4,6 +4,7 @@
   background-color: #999999;
   border-radius: 20px;
   overflow: hidden;
+  position: relative;
 }
 
 .rmdb-moviethumb img {
@@ -24,6 +25,16 @@
 
 .rmdb-moviethumb a:hover img {
   transform: scale(1.05);
+}
+
+.rmdb-moviethumb .title {
+  bottom: 0;
+  color: white;
+  font-size: 24px;
+  margin-bottom: 10px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
 }
 
 .clickable {

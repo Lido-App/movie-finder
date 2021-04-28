@@ -66,13 +66,11 @@ class Home extends Component {
     let endpoint = "";
     this.setState({ loading: true });
     if (this.state.searchTerm === "") {
-      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${
-        this.state.currentPage + 1
-      }`;
+      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${this.state.currentPage + 1
+        }`;
     } else {
-      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${
-        this.state.searchTerm
-      }&pages=${this.state.currentPage + 1}`;
+      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${this.state.searchTerm
+        }&pages=${this.state.currentPage + 1}`;
     }
 
     this.fetchItems(endpoint);
@@ -157,11 +155,7 @@ class Home extends Component {
                   <MovieThumb
                     key={i}
                     clickable={true}
-                    image={
-                      element.poster_path
-                        ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`
-                        : "./images/no_image.jpg"
-                    }
+                    image={element.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`}
                     movieId={element.id}
                     movieName={element.original_title}
                   />
@@ -178,11 +172,7 @@ class Home extends Component {
                 <MovieThumb
                   key={i}
                   clickable={true}
-                  image={
-                    element.poster_path
-                      ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`
-                      : "./images/no_image.jpg"
-                  }
+                  image={element.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`}
                   movieId={element.id}
                   movieName={element.original_title}
                 />

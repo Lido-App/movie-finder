@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import propTypes from "prop-types";
 import "./MovieThumb.css";
 
 //es6 destructuring props
 const MovieThumb = ({ image, movieId, movieName, clickable }) => {
+  const noImage = "/movie-finder/images/no_image.jpg";
+  console.log(image);
+
   return (
     <div className="rmdb-moviethumb">
       {clickable ? (
         <a href={`/movie-finder/${movieId}`}>
-          <img src={image} alt="moviethumb" />
+          <img src={image ?? noImage} alt="moviethumb" />
         </a>
       ) : (
-        <img src={image} alt="moviethumb" />
+        <img src={image ?? noImage} alt="moviethumb" />
+      )}
+      {!image && (
+        <div className="title">{movieName}</div>
       )}
     </div>
   );
