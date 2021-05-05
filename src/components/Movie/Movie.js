@@ -12,7 +12,7 @@ import fetcher from "../../api/fetcher";
 
 export default ({ location, match }) => {
   const [movie, setMovie] = useState(null);
-  const [streamingServices, setStreamingServices] = useState(null)
+  const [streamingServices, setStreamingServices] = useState(null);
   const [actors, setActors] = useState(null);
   const [directors, setDirectors] = useState([]);
   const [loading, setLoading] = useState(null);
@@ -40,12 +40,12 @@ export default ({ location, match }) => {
     ]);
 
     console.log(streamingServices)
-    const { flatrate = [], rent = [], buy = [] } = streamingServices.results?.US ?? {}
-    const allStreamingServices = [...flatrate, ...rent, ...buy]
+    const { flatrate = [], rent = [], buy = [] } = streamingServices.results?.US ?? {};
+    const allStreamingServices = [...flatrate, ...rent, ...buy];
 
     setSimilarMovies(similarMovies.results);
     setMovie(movie);
-    setStreamingServices(allStreamingServices.length ? allStreamingServices : null)
+    setStreamingServices(allStreamingServices.length ? allStreamingServices : null);
     setActors(credits.cast);
     setDirectors(credits.crew.filter((member) => member.job === "Director"));
     setLoading(false);
