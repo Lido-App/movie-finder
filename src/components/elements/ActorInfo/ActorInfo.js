@@ -15,7 +15,7 @@ const ActorInfo = (props) => {
     setLoading(true);
 
     const similarMovieResult = await fetchStarredInMovies(props.actor.id);
-    setStarredInMovieNames(similarMovieResult.movies);
+    setStarredInMovieNames(similarMovieResult.credits);
 
     setLoading(false);
   }, [props.actor.id]);
@@ -47,18 +47,20 @@ const ActorInfo = (props) => {
             {loading ? (
               <div>Loading</div>
             ) : (
-              <div className="rmdb-home-grid">
-                <FourColGrid header={"Movies Appeared In"}>
-                  {starredInMovieNames?.cast?.map((movie) => (
-                    <MovieThumb
-                      clickable
-                      image={movie.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`}
-                      movieId={movie.id}
-                      movieName={movie.title}
-                    />
-                  ))}
-                </FourColGrid>
-              </div>
+              Object.keys(starredInMovieNames).map((dept) =>
+                <div className="rmdb-home-grid">
+                  <FourColGrid header={dept}>
+                    {starredInMovieNames && starredInMovieNames[dept]?.map((movie) => (
+                      <MovieThumb
+                        clickable
+                        image={movie.poster_path && `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`}
+                        movieId={movie.id}
+                        movieName={movie.title}
+                      />
+                    ))}
+                  </FourColGrid>
+                </div>
+              )
             )}
           </div>
         </div>

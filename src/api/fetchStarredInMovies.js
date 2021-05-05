@@ -5,9 +5,14 @@ export default async (personId) => {
     `${API_URL}person/${personId}/movie_credits?api_key=${API_KEY}`
   );
 
-  const results = await movieResult.json();
+  const raw = await movieResult.json();
+  const credits = raw.crew.reduce((credits, role) => {
+    credits[role.department] = (credits[role.department] ?? []).concat([role]);
+    return credits;
+  }, { Cast: raw.cast });
+
 
   return {
-    movies: results,
+    credits,
   };
 };
