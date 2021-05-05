@@ -2,6 +2,18 @@
   margin-bottom: 100px;
 }
 
+.streaming-service-list {
+  display: flex;
+}
+
+.streaming-service-list-item {
+  display: flex;
+  align-items: center;
+}
+.streaming-service-list-item:not(:last-child) {
+  padding-right: 12px;
+}
+
 .rmdb-movie-grid {
   max-width: 1280px;
   margin: 0 auto;

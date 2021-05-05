@@ -18,6 +18,8 @@ const POSTER_SIZE = "w500";
 
 const PORTRAIT_SIZE = "w780";
 
+const ICON_SIZE = "w92"
+
 export {
   API_URL,
   API_KEY,
@@ -25,4 +27,5 @@ export {
   BACKDROP_SIZE,
   PORTRAIT_SIZE,
   POSTER_SIZE,
+  ICON_SIZE,
 };

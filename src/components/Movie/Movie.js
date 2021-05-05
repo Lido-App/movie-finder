@@ -7,11 +7,12 @@ import Spinner from "../elements/Spinner/Spinner";
 
 import "./Movie.css";
 import Sidescroll from "../elements/Sidescroll/Sidescroll";
-import { IMAGE_BASE_URL, POSTER_SIZE } from "../../config";
+import { IMAGE_BASE_URL, ICON_SIZE, POSTER_SIZE } from "../../config";
 import fetcher from "../../api/fetcher";
 
 export default ({ location, match }) => {
   const [movie, setMovie] = useState(null);
+  const [streamingServices, setStreamingServices] = useState(null)
   const [actors, setActors] = useState(null);
   const [directors, setDirectors] = useState([]);
   const [loading, setLoading] = useState(null);
@@ -19,8 +20,13 @@ export default ({ location, match }) => {
 
   useEffect(async () => {
     setLoading(true);
-    const [movie, credits, similarMovies] = await Promise.all([
+    const [movie, streamingServices, credits, similarMovies] = await Promise.all([
       fetcher({ id: match.params.movieId, prefix: "movie", routeName: "" }),
+      fetcher({
+        id: match.params.movieId,
+        prefix: "movie",
+        routeName: "/watch/providers",
+      }),
       fetcher({
         id: match.params.movieId,
         prefix: "movie",
@@ -33,8 +39,13 @@ export default ({ location, match }) => {
       }),
     ]);
 
+    console.log(streamingServices)
+    const { flatrate = [], rent = [], buy = [] } = streamingServices.results?.US ?? {}
+    const allStreamingServices = [...flatrate, ...rent, ...buy]
+
     setSimilarMovies(similarMovies.results);
     setMovie(movie);
+    setStreamingServices(allStreamingServices.length ? allStreamingServices : null)
     setActors(credits.cast);
     setDirectors(credits.crew.filter((member) => member.job === "Director"));
     setLoading(false);
@@ -53,8 +64,19 @@ export default ({ location, match }) => {
           />
         </div>
       ) : null}
+      {!streamingServices && !loading ? <h1>No Streaming Services Found!</h1> : null}
       {!actors && !loading ? <h1>No Movie Found!</h1> : null}
       {loading ? <Spinner /> : null}
+      {streamingServices ? (
+        <ul className="streaming-service-list">{streamingServices.map(({ logo_path, provider_name, provider_id }) => (
+          <li key={provider_id} className="streaming-service-list-item">
+            <img
+              src={`${IMAGE_BASE_URL}${ICON_SIZE}${logo_path}`}
+              alt={provider_name}
+            />
+          </li>
+        ))}</ul>
+      ) : null}
       {actors ? (
         <div className="rmdb-movie-grid">
           <Sidescroll header={"Actors"}>
